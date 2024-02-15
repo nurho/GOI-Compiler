@@ -6,7 +6,7 @@ import System.Directory
 import Control.Monad
 
 -- Internal modules
-import Parser
+import Parsing
 
 main :: IO ()
 main = do args <- getArgs
