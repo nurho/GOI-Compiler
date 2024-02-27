@@ -4,6 +4,7 @@ module Main where
 import System.Environment
 import System.Directory
 import Control.Monad
+import Data.Typeable
 
 -- Internal modules
 import Parsing
@@ -18,4 +19,4 @@ main = do args <- getArgs
           unless filefound $ error "File not found"
 
           contents <- readFile filename
-          putStrLn (parse contents)
+          putStrLn (snd (head (parse item contents)))
