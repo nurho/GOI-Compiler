@@ -20,3 +20,4 @@ main = do args <- getArgs
 
           contents <- readFile filename
           putStrLn (snd (head (parse item contents)))
+          putStrLn (show (fst (head (parse item contents))))

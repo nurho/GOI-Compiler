@@ -37,10 +37,14 @@ item = P (\inp -> case inp of
                      []     -> []
                      (x:xs) -> [(x,xs)])
 
--- AST
-data Var = Char 
+var :: Parser Term
+var = P (\inp -> case inp of
+                    [] -> []
+                    (x:xs) -> [((Var x),xs)])
 
-data AST = Var
-           | Abs Var AST
-           | App AST AST
-           | Succ AST
+
+-- Lambda calculus data type
+data Term = Var Char
+           | Abs Char Term
+           | App Term Term
+           | Succ Term
