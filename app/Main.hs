@@ -4,6 +4,7 @@ module Main where
 import System.Environment
 import System.Directory
 import Control.Monad
+import Control.Applicative
 import Data.Typeable
 
 -- Internal modules
@@ -11,13 +12,16 @@ import Parsing
 
 main :: IO ()
 main = do args <- getArgs
+          -- Get input path from first arg
           when (null args) $ error "No input file declared"
-          let filename = head args
+          let filepath = head args
 
-          putStrLn ("\nFinding file \'" ++ filename ++ "\'")
-          filefound <- doesFileExist filename
+          -- Attempt to find file from 
+          putStrLn ("\nFinding file \'" ++ filepath ++ "\'")
+          filefound <- doesFileExist filepath
           unless filefound $ error "File not found"
 
-          contents <- readFile filename
-          putStrLn (snd (head (parse item contents)))
-          putStrLn (show (fst (head (parse item contents))))
+          contents <- readFile filepath
+--          putStrLn (snd (head (parse item contents)))
+--          putStrLn (show (fst (head (parse item contents))))
+          putStrLn (show (parse (item <|> return 'd') "abc"))

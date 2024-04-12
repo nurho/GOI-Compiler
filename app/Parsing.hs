@@ -27,9 +27,21 @@ instance Monad Parser where
                          []        -> []
                          [(v,out)] -> parse (f v) out)
 
+instance Alternative Parser where
+  -- empty :: Parser a
+  empty = P (\inp -> [])
+
+  -- (<|>) :: Parser a -> Parser a -> Parser a
+  p <|> q = P (\inp -> case parse p inp of
+                          []        -> parse q inp
+                          [(v,out)] -> [(v,out)])
+
+
 -- Parsing function
 parse :: Parser a -> String -> [(a,String)]
 parse (P p) inp = p inp
+
+
 
 -- Grammar
 item :: Parser Char
@@ -40,7 +52,8 @@ item = P (\inp -> case inp of
 var :: Parser Term
 var = P (\inp -> case inp of
                     [] -> []
-                    (x:xs) -> [((Var x),xs)])
+                    (x:xs) -> [(Var x,xs)])
+
 
 
 -- Lambda calculus data type
