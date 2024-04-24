@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use lambda-case" #-}
 module Parsing where
 
 import Control.Applicative
@@ -54,6 +56,11 @@ var = P (\inp -> case inp of
                     [] -> []
                     (x:xs) -> [(Var x,xs)])
 
+abs :: Parser Term
+abs = P (\inp -> case inp of
+                    [] -> []
+                    ('(':'\\':c:xs) -> [(Abs c (Var c),xs)])
+
 
 
 -- Lambda calculus data type
@@ -61,3 +68,10 @@ data Term = Var Char
            | Abs Char Term
            | App Term Term
            | Succ Term
+
+instance Show Term where
+  show (Var c) = "Var " ++ [c]
+  show (Abs c t) = "Abs " ++ [c] ++ show t
+  show (App t u) = "App " ++ show t ++ show u
+  show (Succ t) = "Succ " ++ show t
+

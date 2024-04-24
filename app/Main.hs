@@ -24,4 +24,5 @@ main = do args <- getArgs
           contents <- readFile filepath
 --          putStrLn (snd (head (parse item contents)))
 --          putStrLn (show (fst (head (parse item contents))))
-          putStrLn (show (parse (item <|> return 'd') "abc"))
+--          putStrLn (show (parse (item <|> return 'd') "abc"))
+          putStrLn (show (parse var "abc"))
