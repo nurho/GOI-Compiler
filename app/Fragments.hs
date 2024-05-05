@@ -8,14 +8,14 @@ appFrag ltop ltop_out lright lright_out lleft lleft_out =
   \  // Application Right\n\
   \  " ++ lright ++ ": PUSHRIGHT; goto " ++ lleft_out ++ ";\n\
   \  // Application Left\n\
-  \  " ++ lleft ++ ": POP; if (carry == LEFT) goto " ++ ltop_out ++"; else goto " ++ lright_out ++ "; "
+  \  " ++ lleft ++ ": POP; if (carry == LEFT) goto " ++ ltop_out ++"; else goto " ++ lright_out ++ "; \n\n"
 
 -- Number
 numFrag :: String -> String -> Int -> String
 numFrag ltop ltop_out num =
   "  // Constant\n\
   \  " ++ ltop ++ ": pushNum(" ++ show num ++ "); printf(\"Push num\\n\"); num_set = 1;\
-  \ goto " ++ ltop_out ++ ";\n\n;"
+  \ goto " ++ ltop_out ++ ";\n\n"
 
 -- Successor
 succFrag :: String -> String -> String -> String -> String

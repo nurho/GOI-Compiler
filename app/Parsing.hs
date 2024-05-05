@@ -39,39 +39,64 @@ instance Alternative Parser where
                           [(v,out)] -> [(v,out)])
 
 
--- Parsing function
-parse :: Parser a -> String -> [(a,String)]
-parse (P p) inp = p inp
 
-
-
--- Grammar
+-- Parsing functions
 item :: Parser Char
 item = P (\inp -> case inp of
                      []     -> []
                      (x:xs) -> [(x,xs)])
 
-var :: Parser Term
-var = P (\inp -> case inp of
+sat :: (Char -> Bool) -> Parser Char
+sat p = do x <- item
+           if p x then return x else empty
+
+char :: Char -> Parser Char
+char x = sat (== x)
+
+parse :: Parser a -> String -> [(a,String)]
+parse (P p) inp = p inp
+
+
+-- Grammar
+varP :: Parser Term
+varP = P (\inp -> case inp of
                     [] -> []
                     (x:xs) -> [(Var x,xs)])
+termP :: Parser Term
+termP = do varP <|> absP <|> appP <|> succP
 
-abs :: Parser Term
-abs = P (\inp -> case inp of
+expr :: Parser Term
+expr = do char '('
+          t <- termP
+          char ')'
+          return t
+
+absP :: Parser Term
+absP = P (\inp -> case inp of
                     [] -> []
-                    ('(':'\\':c:xs) -> [(Abs c (Var c),xs)])
+                    ('\\':c:xs) -> [(Abs c (Var c),xs)])
+
+appP :: Parser Term
+appP = P (\inp -> case inp of
+                   [] -> [])
+
+succP :: Parser Term
+succP = P (\inp -> case inp of
+                     [] -> [])
+                   
 
 
 
 -- Lambda calculus data type
 data Term = Var Char
+           | Num Int
            | Abs Char Term
            | App Term Term
            | Succ Term
 
 instance Show Term where
-  show (Var c) = "Var " ++ [c]
+  show (Var c)   = "Var " ++ [c]
+  show (Num n)   = "Num " ++ show n
   show (Abs c t) = "Abs " ++ [c] ++ show t
   show (App t u) = "App " ++ show t ++ show u
-  show (Succ t) = "Succ " ++ show t
-
+  show (Succ t)  = "Succ " ++ show t
