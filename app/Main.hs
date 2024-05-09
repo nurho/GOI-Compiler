@@ -4,8 +4,6 @@ module Main where
 import System.Environment
 import System.Directory
 import Control.Monad
-import Control.Applicative
-import Data.Typeable
 
 -- Internal modules
 import Parsing
@@ -27,25 +25,16 @@ main = do args <- getArgs
           putStrLn "File read successfully"
           putStrLn "Parsing..."
 
-          -- Output tests
---          putStrLn (snd (head (parse item contents)))
---          putStrLn (show (fst (head (parse item contents))))
---          putStrLn (show (parse (item <|> return 'd') "abc"))
-          -- putStrLn (show (parse var "abc"))
-          -- putStrLn (show (parse exprP "((\\x.x) (y))"))
-
           -- Parse and print tree to console
           case parse exprP contents of
             []          -> error "Parsing failed"
-            [(x,"\n")]  -> do putStrLn "Parsed as:" 
-                              putStrLn (show x)
+            [(x,"\n")]  -> do putStrLn "Parsed as:"
+                              print x
             _           -> error "Parsing failed"
-
 
           -- Generate output C file
           putStrLn "Generating output..."
           code <- generator (fst (head (parse exprP contents)))
           writeFile "output.c" code
-          
-          putStrLn "Success!"
 
+          putStrLn "Success!"

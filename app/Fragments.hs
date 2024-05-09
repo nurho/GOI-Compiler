@@ -36,3 +36,10 @@ absFrag ltop lleft lright ltop_out lleft_out lright_out =
   \  " ++ lleft ++ ": printf(\"Abs left\\n\"); pushRight(); goto " ++ ltop_out ++ ";\n\
   \  // Abstraction Right\n\
   \  " ++ lright ++ ": printf(\"Abs right\\n\"); pushLeft(); goto " ++ ltop_out ++ ";\n\n"
+
+-- Final Code
+finalCode :: String
+finalCode = "  // Root\n\
+            \  l0: printf(\"Finished after %d stack operations\\n\",count); \n\n\
+            \  // Print result\n\
+            \  if (num_set > 0) printf(\"Result: %d\\n\", num);\n\n  return 0;\n}"

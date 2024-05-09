@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use lambda-case" #-}
 module Parsing where
 
 import Control.Applicative
@@ -68,7 +66,6 @@ parse (P p) inp = p inp
 
 
 -- Grammar
-
 exprP :: Parser Term
 exprP = do _ <- char '('
            t <- termP
@@ -77,11 +74,6 @@ exprP = do _ <- char '('
 
 termP :: Parser Term
 termP = do appP <|> absP <|> succP <|> numP <|> varP
-
--- varP :: Parser Term
--- varP = P (\inp -> case inp of
---                     [] -> []
---                     (x:xs) -> [(Var x,xs)])
 
 varP :: Parser Term
 varP = do v <- lower
@@ -95,7 +87,7 @@ absP :: Parser Term
 absP = do _ <- char '\\'
           c <- item
           _ <- char '.'
-          t <- termP
+          t <- exprP
           return (Abs c t)
 
 appP :: Parser Term
@@ -111,17 +103,10 @@ succP = do _ <- char 'S'
            return (Succ t)
                    
 
--- Lambda calculus data type
+-- AST data type
 data Term = Var Char
            | Num Int
            | Abs Char Term
            | App Term Term
            | Succ Term
            deriving Show
-
--- instance Show Term where
---   show (Var c)   = "Var " ++ [c]
---   show (Num n)   = "Num " ++ show n
---   show (Abs c t) = "Abs " ++ [c] ++ show t
---   show (App t u) = "App " ++ show t ++ show u
---   show (Succ t)  = "Succ " ++ show t
