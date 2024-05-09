@@ -2,7 +2,7 @@ module Fragments where
 
 -- Application
 appFrag :: String -> String -> String -> String -> String -> String -> String
-appFrag ltop ltop_out lright lright_out lleft lleft_out =
+appFrag ltop lright lleft ltop_out lright_out lleft_out =
   "  // Application Top\n\
   \  " ++ ltop ++ ": PUSHLEFT; goto " ++ lleft_out ++ ";\n\
   \  // Application Right\n\
@@ -19,7 +19,7 @@ numFrag ltop ltop_out num =
 
 -- Successor
 succFrag :: String -> String -> String -> String -> String
-succFrag ltop ltop_out lleft lleft_out = 
+succFrag ltop lleft ltop_out lleft_out = 
   "  // Successor top\n\
   \  " ++ ltop ++ ": printf(\"Succ visit\\n\"); goto " ++ lleft_out ++ ";\n\
   \  // Successor bottom\n\
@@ -28,7 +28,7 @@ succFrag ltop ltop_out lleft lleft_out =
 
 -- Abstraction
 absFrag :: String -> String -> String -> String -> String -> String -> String
-absFrag ltop ltop_out lright lright_out lleft lleft_out = 
+absFrag ltop lleft lright ltop_out lleft_out lright_out = 
   "  // Abstraction Top\n\  
   \  " ++ ltop ++ ": printf(\"Abs top\\n\"); pop(); if (carry == LEFT) goto\
   \ " ++ lright_out ++ "; else goto " ++ lleft_out ++ ";\n\

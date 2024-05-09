@@ -53,39 +53,63 @@ sat p = do x <- item
 char :: Char -> Parser Char
 char x = sat (== x)
 
+lower :: Parser Char
+lower = sat isLower
+
+digit :: Parser Char
+digit = sat isDigit
+
+nat :: Parser Int
+nat = do xs <- some digit
+         return (read xs)
+
 parse :: Parser a -> String -> [(a,String)]
 parse (P p) inp = p inp
 
 
 -- Grammar
-varP :: Parser Term
-varP = P (\inp -> case inp of
-                    [] -> []
-                    (x:xs) -> [(Var x,xs)])
-termP :: Parser Term
-termP = do varP <|> absP <|> appP <|> succP
 
-expr :: Parser Term
-expr = do char '('
-          t <- termP
-          char ')'
-          return t
+exprP :: Parser Term
+exprP = do _ <- char '('
+           t <- termP
+           _ <- char ')'
+           return t
+
+termP :: Parser Term
+termP = do appP <|> absP <|> succP <|> numP <|> varP
+
+-- varP :: Parser Term
+-- varP = P (\inp -> case inp of
+--                     [] -> []
+--                     (x:xs) -> [(Var x,xs)])
+
+varP :: Parser Term
+varP = do v <- lower
+          return (Var v)
+
+numP :: Parser Term
+numP = do n <- nat
+          return (Num n)
 
 absP :: Parser Term
-absP = P (\inp -> case inp of
-                    [] -> []
-                    ('\\':c:xs) -> [(Abs c (Var c),xs)])
+absP = do _ <- char '\\'
+          c <- item
+          _ <- char '.'
+          t <- termP
+          return (Abs c t)
 
 appP :: Parser Term
-appP = P (\inp -> case inp of
-                   [] -> [])
+appP = do t <- exprP
+          _ <- char ' '
+          u <- exprP
+          return (App t u)
 
 succP :: Parser Term
-succP = P (\inp -> case inp of
-                     [] -> [])
+succP = do _ <- char 'S'
+           _ <- char ' '
+           t <- termP
+           return (Succ t)
                    
-
-
 
 -- Lambda calculus data type
 data Term = Var Char
@@ -93,10 +117,11 @@ data Term = Var Char
            | Abs Char Term
            | App Term Term
            | Succ Term
+           deriving Show
 
-instance Show Term where
-  show (Var c)   = "Var " ++ [c]
-  show (Num n)   = "Num " ++ show n
-  show (Abs c t) = "Abs " ++ [c] ++ show t
-  show (App t u) = "App " ++ show t ++ show u
-  show (Succ t)  = "Succ " ++ show t
+-- instance Show Term where
+--   show (Var c)   = "Var " ++ [c]
+--   show (Num n)   = "Num " ++ show n
+--   show (Abs c t) = "Abs " ++ [c] ++ show t
+--   show (App t u) = "App " ++ show t ++ show u
+--   show (Succ t)  = "Succ " ++ show t

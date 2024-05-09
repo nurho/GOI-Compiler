@@ -24,13 +24,28 @@ main = do args <- getArgs
 
           -- Read contents of input file
           contents <- readFile filepath
+          putStrLn "File read successfully"
+          putStrLn "Parsing..."
 
           -- Output tests
 --          putStrLn (snd (head (parse item contents)))
 --          putStrLn (show (fst (head (parse item contents))))
 --          putStrLn (show (parse (item <|> return 'd') "abc"))
-          putStrLn (show (parse var "abc"))
+          -- putStrLn (show (parse var "abc"))
+          -- putStrLn (show (parse exprP "((\\x.x) (y))"))
 
-          -- Generate output .c file
-          generator (fst (head (parse var "abc")))
+          -- Parse and print tree to console
+          case parse exprP contents of
+            []          -> error "Parsing failed"
+            [(x,"\n")]  -> do putStrLn "Parsed as:" 
+                              putStrLn (show x)
+            _           -> error "Parsing failed"
+
+
+          -- Generate output C file
+          putStrLn "Generating output..."
+          code <- generator (fst (head (parse exprP contents)))
+          writeFile "output.c" code
+          
+          putStrLn "Success!"
 
