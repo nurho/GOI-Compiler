@@ -8,7 +8,7 @@ to a Geometry Of Interaction based computation model, implemented in Haskell.
 
       //\\
          \\
-         /\\
-        // \\
-       //   \\
-      //     \\//
+         /\\       \\  //      \\  //
+        // \\       \\//        \\//
+       //   \\      //\\        //\\
+      //     \\//  //  \\  ||  //  \\
